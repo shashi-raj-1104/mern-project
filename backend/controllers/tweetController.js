@@ -59,7 +59,23 @@ export const likeOrDislike = async (req,res) => {
         console.log(error);
     }
 };
-export const getAllTweets = async (req,res) => {
+
+export const comment = async (req,res) => {
+    try {
+        const loggedInUserId = req.body.id;
+        const tweetId = req.body.tweetId;
+        const content = req.body.content;
+        const tweet = await Tweet.findById(tweetId);
+        
+            await Tweet.findByIdAndUpdate(tweetId, {$push:{comment:req.body}});
+            return res.status(200).json({
+                message:"commented."
+            })
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const    getAllTweets = async (req,res) => {
     // loggedInUser tweet + following user tweet
     try {
         const id = req.params.id;

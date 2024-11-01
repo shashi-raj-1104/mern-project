@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Avatar from "react-avatar";
 import { FaRegComment } from "react-icons/fa";
 import { MdOutlineDeleteOutline } from "react-icons/md";
@@ -13,7 +13,7 @@ import {timeSince} from "../utils/constant";
 
 const Tweet = ({ tweet }) => {
     const { user } = useSelector(store => store.user); 
-     
+    const [click, setClick] = useState(false);   
     const dispatch = useDispatch();
     const likeOrDislikeHandler = async (id) => {
         try {
@@ -28,6 +28,22 @@ const Tweet = ({ tweet }) => {
             toast.success(error.response.data.message);
             console.log(error);
         }
+    }
+
+    const commentHandler = async (id, comment) => {
+        try {
+            const res = await axios.post(`${TWEET_API_END_POINT}/comment`, { id: user?._id , content: comment, tweetId: id }, {
+                withCredentials: true
+            })
+            console.log(res);
+            dispatch(getRefresh());
+            toast.success(res.data.message);
+
+        } catch (error) {
+            toast.success(error.response.data.message);
+            console.log(error);
+        }
+       
     }
     const deleteTweetHandler = async (id) => {
         try {
@@ -56,7 +72,7 @@ const Tweet = ({ tweet }) => {
                         </div>
                         <div className='flex justify-between my-3'>
                             <div className='flex items-center'>
-                                <div className='p-2 hover:bg-green-200 rounded-full cursor-pointer'>
+                                <div onClick={() => setClick(!click)} className='p-2 hover:bg-green-200 rounded-full cursor-pointer'>
                                     <FaRegComment size="20px" />
                                 </div>
                                 <p>0</p>
@@ -85,6 +101,26 @@ const Tweet = ({ tweet }) => {
                             }
 
                         </div>
+                        {
+                            click && (<>
+                                <ul>
+                                    {tweet?.comments?.map(comment => (
+                                        <li key={comment?._id}>
+                                            <strong>{comment?.user?.username}</strong>: {comment?.content}
+                                        </li>
+                                    ))}
+                                </ul>
+                                <form onSubmit={(e) => {
+                                    e.preventDefault();
+                                    commentHandler(tweet?._id, e.target.comment.value);
+                                    e.target.comment.value = '';
+                                }}>
+                                    <input type="text" name="comment" placeholder='Comment' className="outline-blue-500 border w-full border-gray-800 px-3 py-2 rounded-full my-1 font-semibold" />
+                                    <button type="submit">Post</button>
+                                </form>
+
+                            </>)
+                        }
                     </div>
                 </div>
             </div>

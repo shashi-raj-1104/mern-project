@@ -4,6 +4,7 @@ import { FaRegComment } from "react-icons/fa";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { CiBookmark } from "react-icons/ci";
+import { IoSend } from "react-icons/io5";
 import axios from "axios";
 import { TWEET_API_END_POINT } from '../utils/constant';
 import toast from "react-hot-toast";
@@ -32,7 +33,7 @@ const Tweet = ({ tweet }) => {
 
     const commentHandler = async (id, comment) => {
         try {
-            const res = await axios.post(`${TWEET_API_END_POINT}/comment`, { id: user?._id , content: comment, tweetId: id }, {
+            const res = await axios.post(`${TWEET_API_END_POINT}/comment`, { user: user?.username, id: user?._id, content: comment, tweetId: id}, {
                 withCredentials: true
             })
             console.log(res);
@@ -43,7 +44,7 @@ const Tweet = ({ tweet }) => {
             toast.success(error.response.data.message);
             console.log(error);
         }
-       
+      
     }
     const deleteTweetHandler = async (id) => {
         try {
@@ -75,7 +76,7 @@ const Tweet = ({ tweet }) => {
                                 <div onClick={() => setClick(!click)} className='p-2 hover:bg-green-200 rounded-full cursor-pointer'>
                                     <FaRegComment size="20px" />
                                 </div>
-                                <p>0</p>
+                                <p>{tweet?.comment?.length}</p>
                             </div>
                             <div className='flex items-center'>
                                 <div onClick={() => likeOrDislikeHandler(tweet?._id)} className='p-2 hover:bg-pink-200 rounded-full cursor-pointer'>
@@ -103,22 +104,42 @@ const Tweet = ({ tweet }) => {
                         </div>
                         {
                             click && (<>
-                                <ul>
-                                    {tweet?.comments?.map(comment => (
-                                        <li key={comment?._id}>
-                                            <strong>{comment?.user?.username}</strong>: {comment?.content}
-                                        </li>
-                                    ))}
-                                </ul>
+
                                 <form onSubmit={(e) => {
                                     e.preventDefault();
                                     commentHandler(tweet?._id, e.target.comment.value);
                                     e.target.comment.value = '';
                                 }}>
-                                    <input type="text" name="comment" placeholder='Comment' className="outline-blue-500 border w-full border-gray-800 px-3 py-2 rounded-full my-1 font-semibold" />
-                                    <button type="submit">Post</button>
+                                    <div className='flex'>
+                                        <input
+                                            type="text"
+                                            name="comment"
+                                            placeholder='Comment'
+                                            className="outline-blue-500 border w-full border-gray-800 px-3 py-2 rounded-full my-1 font-semibold"
+                                            onKeyPress={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    e.preventDefault();
+                                                }
+                                            }}
+                                        />
+                                        <button type='submit' className='bg-[#1D9BF0] mx-1 my-2 px-4 py-1 text-base text-white text-right border-none rounded-full '>
+                                            <IoSend />
+                                        </button>
+                                    </div>
                                 </form>
 
+                                <ul>
+                                    
+                                    {tweet?.comment?.map(comment => (
+                                        <li key={comment?._id}>
+                                            <strong className='pr-2'>{comment?.user}</strong>
+                                            
+                                            :
+                                            {comment?.content}
+                                            
+                                        </li>
+                                    ))}
+                                </ul>
                             </>)
                         }
                     </div>

@@ -5,7 +5,8 @@ const userSlice = createSlice({
     initialState:{
         user:null,
         otherUsers:null,
-        profile:null
+        profile:null,
+        bookmarkUpdate:null
     },
     reducers:{
         // multiple actions
@@ -28,8 +29,20 @@ const userSlice = createSlice({
                 // follow
                 state.user.following.push(action.payload);
             }
-        }
+        },
+        bookmarkUpdate: (state, action) => {
+            if (state.user) {
+                const tweetId = action.payload;
+                const updatedBookmarks = state.user.bookmarks.includes(tweetId)
+                    ? state.user.bookmarks.filter(id => id !== tweetId) // Remove bookmark
+                    : [...state.user.bookmarks, tweetId]; // Add bookmark
+                
+                state.user = { ...state.user, bookmarks: updatedBookmarks }; // Ensure new reference
+            }
+        },
     }
 });
-export const {getUser, getOtherUsers,getMyProfile,followingUpdate} = userSlice.actions;
+export const {getUser, getOtherUsers,getMyProfile,followingUpdate, bookmarkUpdate } = userSlice.actions;
 export default userSlice.reducer;
+
+

@@ -4,12 +4,15 @@ import { FaRegComment } from "react-icons/fa";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiHeart } from "react-icons/ci";
 import { CiBookmark } from "react-icons/ci";
+import { FaBookmark } from "react-icons/fa";
+import { FcLike } from "react-icons/fc";
 import { IoSend } from "react-icons/io5";
 import axios from "axios";
-import { TWEET_API_END_POINT } from '../utils/constant';
+import { TWEET_API_END_POINT, USER_API_END_POINT } from '../utils/constant';
 import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { getRefresh } from '../redux/tweetSlice';
+import { bookmarkUpdate } from '../redux/userSlice';
 import {timeSince} from "../utils/constant";
 
 const Tweet = ({ tweet }) => {
@@ -46,6 +49,21 @@ const Tweet = ({ tweet }) => {
         }
       
     }
+    const BookmarkHandler = async (id) => {
+        try {
+            axios.defaults.withCredentials = true;
+            const res = await axios.put(`${USER_API_END_POINT}/bookmark/${id}`, { id: user?._id });
+
+            console.log("Updated user data:", res.data.user); // Check if backend returns updated user
+
+            dispatch(bookmarkUpdate(id)); // Optimistically update Redux
+            toast.success(res.data.message);
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Error updating bookmark");
+            console.log(error);
+        }
+        console.log(user);
+    };
     const deleteTweetHandler = async (id) => {
         try {
             axios.defaults.withCredentials = true;
@@ -80,16 +98,23 @@ const Tweet = ({ tweet }) => {
                             </div>
                             <div className='flex items-center'>
                                 <div onClick={() => likeOrDislikeHandler(tweet?._id)} className='p-2 hover:bg-pink-200 rounded-full cursor-pointer'>
-                                    <CiHeart size="24px" />
-
+                                {tweet?.like.includes(user?._id) ? (
+                                        <FcLike  size="22px" />
+                                    ) : (
+                                        <CiHeart size="24px" />
+                                    )}
                                 </div>
                                 <p>{tweet?.like?.length}</p>
                             </div>
                             <div className='flex items-center'>
-                                <div className='p-2 hover:bg-yellow-200 rounded-full cursor-pointer'>
-                                    <CiBookmark size="24px" />
+                                <div onClick={() => BookmarkHandler(tweet?._id)} className='p-2 hover:bg-yellow-200 rounded-full cursor-pointer'>
+                                    {user?.bookmarks.includes(tweet?._id) ? (
+                                        <FaBookmark  size="22px" />
+                                    ) : (
+                                        <CiBookmark size="24px" />
+                                    )}
                                 </div>
-                                <p>0</p>
+                                {/* <p>{user?.bookmarks?.length}</p> */}
                             </div>
                             {
                                 user?._id === tweet?.userId && (

@@ -40,9 +40,12 @@ const userSlice = createSlice({
                 state.user = { ...state.user, bookmarks: updatedBookmarks }; // Ensure new reference
             }
         },
+        updateUser: (state, action) => {
+            state.user = { ...state.user, ...action.payload }; // Merge updated user data
+        }
     }
 });
-export const {getUser, getOtherUsers,getMyProfile,followingUpdate, bookmarkUpdate } = userSlice.actions;
+export const {getUser, getOtherUsers,getMyProfile,followingUpdate, bookmarkUpdate, updateUser } = userSlice.actions;
 export default userSlice.reducer;
 
 

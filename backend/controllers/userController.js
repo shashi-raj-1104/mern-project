@@ -176,3 +176,25 @@ export const unfollow = async (req,res) => {
         console.log(error);
     }
 }
+
+export const update = async(req, res)=>{
+    try {
+        const {name, bio, profile_photo, cover_photo} = req.body;
+        const {id} = req.params;
+
+        const updatedUser = await User.findByIdAndUpdate(id, {name, bio, profile_photo, cover_photo}, {new: true});
+        if(!updatedUser){
+            return res.status(404).json({
+                message: "User not found",
+                success: false
+            })
+        }
+        res.status(200).json({
+            message: "Profile updated successfully",
+            user: updatedUser,
+            success: true
+        })
+    } catch (error) {
+        console.log(error);
+    }
+}

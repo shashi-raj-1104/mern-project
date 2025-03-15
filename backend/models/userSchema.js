@@ -27,9 +27,22 @@ const userSchema = new mongoose.Schema({
         type:Array,
         default:[]
     }, 
+    posts:{
+        type:Array,
+        default:[]
+    }, 
     bookmarks:{
         type:Array,
         default:[]
+    },
+    bio:{
+        type: String
+    },
+    profile_photo:{
+        type: String
+    },
+    cover_photo:{
+        type: String
     }
 },{timestamps:true});
 export const User = mongoose.model("User", userSchema);

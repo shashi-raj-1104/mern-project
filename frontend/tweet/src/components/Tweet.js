@@ -13,11 +13,11 @@ import toast from "react-hot-toast";
 import { useSelector, useDispatch } from "react-redux";
 import { getRefresh } from '../redux/tweetSlice';
 import { bookmarkUpdate } from '../redux/userSlice';
-import {timeSince} from "../utils/constant";
+import { timeSince } from "../utils/constant";
 
 const Tweet = ({ tweet }) => {
-    const { user } = useSelector(store => store.user); 
-    const [click, setClick] = useState(false);   
+    const { user } = useSelector(store => store.user);
+    const [click, setClick] = useState(false);
     const dispatch = useDispatch();
     const likeOrDislikeHandler = async (id) => {
         try {
@@ -80,7 +80,11 @@ const Tweet = ({ tweet }) => {
         <div className='border-b border-gray-200'>
             <div>
                 <div className='flex p-4'>
-                    <Avatar src="https://pbs.twimg.com/profile_images/1703261403237502976/W0SFbJVS_400x400.jpg" size="40" round={true} />
+                    <img
+                        src={tweet?.userDetails[0]?.profile_photo || "https://img.freepik.com/premium-vector/young-man-anime-style-character-vector-illustration-design-manga-anime-boy_147933-4642.jpg"}
+                        alt="Profile"
+                        className="w-[45px] h-[45px] object-cover rounded-full"
+                    />
                     <div className=' ml-2 w-full'>
                         <div className='flex items-center'>
                             <h1 className='font-bold'>{tweet?.userDetails[0]?.name}</h1>
@@ -98,8 +102,8 @@ const Tweet = ({ tweet }) => {
                             </div>
                             <div className='flex items-center'>
                                 <div onClick={() => likeOrDislikeHandler(tweet?._id)} className='p-2 hover:bg-pink-200 rounded-full cursor-pointer'>
-                                {tweet?.like.includes(user?._id) ? (
-                                        <FcLike  size="22px" />
+                                    {tweet?.like.includes(user?._id) ? (
+                                        <FcLike size="22px" />
                                     ) : (
                                         <CiHeart size="24px" />
                                     )}
@@ -109,7 +113,7 @@ const Tweet = ({ tweet }) => {
                             <div className='flex items-center'>
                                 <div onClick={() => BookmarkHandler(tweet?._id)} className='p-2 hover:bg-yellow-200 rounded-full cursor-pointer'>
                                     {user?.bookmarks.includes(tweet?._id) ? (
-                                        <FaBookmark  size="22px" />
+                                        <FaBookmark size="22px" />
                                     ) : (
                                         <CiBookmark size="24px" />
                                     )}
@@ -154,14 +158,14 @@ const Tweet = ({ tweet }) => {
                                 </form>
 
                                 <ul>
-                                    
+
                                     {tweet?.comment?.map(comment => (
                                         <li key={comment?._id}>
                                             <strong className='pr-2'>{comment?.user}</strong>
-                                            
+
                                             :
                                             {comment?.content}
-                                            
+
                                         </li>
                                     ))}
                                 </ul>

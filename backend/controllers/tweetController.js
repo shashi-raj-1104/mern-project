@@ -4,18 +4,33 @@ import { User } from "../models/userSchema.js";
 export const createTweet = async (req, res) => {
     try {
         const { description, id } = req.body;
+
         if (!description || !id) {
-            return res.status(401).json({
+            return res.status(400).json({
                 message: "Fields are required.",
                 success: false
             });
         };
+
+       
         const user = await User.findById(id).select("-password");
-        await Tweet.create({
+        if (!user) {
+            return res.status(404).json({
+                message: "User not found.",
+                success: false
+            });
+        }
+
+        // Create the tweet
+        const newTweet = await Tweet.create({
             description,
-            userId:id,
-            userDetails:user
+            userId: id,
+            userDetails: user
         });
+
+        // Add tweet ID to the user's posts array
+        user.posts.push(newTweet._id);
+        await user.save();
         return res.status(201).json({
             message:"Tweet created successfully.",
             success:true,

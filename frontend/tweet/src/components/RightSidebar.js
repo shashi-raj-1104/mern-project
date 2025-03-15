@@ -19,7 +19,11 @@ const RightSidebar = ({ otherUsers }) => {
               <div key={user?._id} className='flex items-center justify-between my-3'>
                 <div className='flex'>
                   <div>
-                    <Avatar src="https://pbs.twimg.com/profile_images/1703261403237502976/W0SFbJVS_400x400.jpg" size="40" round={true} />
+                    <img
+                      src={user?.profile_photo || "https://img.freepik.com/premium-vector/young-man-anime-style-character-vector-illustration-design-manga-anime-boy_147933-4642.jpg"}
+                      alt="Profile"
+                      className="w-[45px] h-[45px] object-cover rounded-full"
+                    />
                   </div>
                   <div className='ml-2'>
                     <h1 className='font-bold'>{user?.name}</h1>

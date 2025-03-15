@@ -10,7 +10,7 @@ import { getAllTweets, getIsActive, getRefresh } from '../redux/tweetSlice';
 const CreatePost = () => {
     const [description, setDescription] = useState("");
     const { user } = useSelector(store => store.user);
-    const {isActive} = useSelector(store=>store.tweet);
+    const { isActive } = useSelector(store => store.tweet);
     const dispatch = useDispatch();
 
     const submitHandler = async () => {
@@ -34,10 +34,10 @@ const CreatePost = () => {
     }
 
     const forYouHandler = () => {
-         dispatch(getIsActive(true));
+        dispatch(getIsActive(true));
     }
     const followingHandler = () => {
-        
+
         dispatch(getIsActive(false));
     }
 
@@ -55,7 +55,11 @@ const CreatePost = () => {
                 <div >
                     <div className='flex items-center p-4'>
                         <div>
-                            <Avatar src="https://pbs.twimg.com/profile_images/1703261403237502976/W0SFbJVS_400x400.jpg" size="40" round={true} />
+                            <img
+                                src={user?.profile_photo || "https://img.freepik.com/premium-vector/young-man-anime-style-character-vector-illustration-design-manga-anime-boy_147933-4642.jpg"}
+                                alt="Profile"
+                                className="w-[45px] h-[45px] object-cover rounded-full"
+                            />
                         </div>
                         <input value={description} onChange={(e) => setDescription(e.target.value)} className='w-full outline-none border-none text-xl ml-2' type="text" placeholder='What is happening?!' />
                     </div>

@@ -136,8 +136,8 @@ export const follow = async(req,res)=>{
     try {
         const loggedInUserId = req.body.id; 
         const userId = req.params.id; 
-        const loggedInUser = await User.findById(loggedInUserId);//patel
-        const user = await User.findById(userId);//keshav
+        const loggedInUser = await User.findById(loggedInUserId);
+        const user = await User.findById(userId);
         if(!user.followers.includes(loggedInUserId)){
             await user.updateOne({$push:{followers:loggedInUserId}});
             await loggedInUser.updateOne({$push:{following:userId}});
@@ -158,8 +158,8 @@ export const unfollow = async (req,res) => {
     try {
         const loggedInUserId = req.body.id; 
         const userId = req.params.id; 
-        const loggedInUser = await User.findById(loggedInUserId);//patel
-        const user = await User.findById(userId);//keshav
+        const loggedInUser = await User.findById(loggedInUserId);
+        const user = await User.findById(userId);
         if(loggedInUser.following.includes(userId)){
             await user.updateOne({$pull:{followers:loggedInUserId}});
             await loggedInUser.updateOne({$pull:{following:userId}});
